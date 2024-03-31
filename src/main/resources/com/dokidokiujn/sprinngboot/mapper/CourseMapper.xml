@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dokidokiujn.sprinngboot.mapper.CourseMapper">
+    <select id="queryCourseWithCapacity" resultType="com.dokidokiujn.sprinngboot.entity.Course">
+        select c.*, sc.student_id is not null as isSelected
+        from course c
+        left join sc on c.id = sc.course_id and sc.student_id = #{student_id}
+        <where>
+            <if test="code != null">
+                and c.code = #{code}
+            </if>
+            <choose>
+                <when test="hasCapacity">
+                    and c.totalCapacity > c.selectedCount
+                </when>
+                <when test="hasCapacity1">
+                    and c.totalCapacity = c.selectedCount
+                </when>
+            </choose>
+        </where>
+    </select>
+</mapper>
